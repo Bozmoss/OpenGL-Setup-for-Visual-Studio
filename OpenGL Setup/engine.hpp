@@ -7,26 +7,33 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // Header includes
-// TODO: Add headers here
-
-// Function prototypes
-void WindowResize(GLFWwindow* window, int width, int height);
+#include "shader.hpp"
 
 // Class definition
 class Engine {
 private:
-	int width = 800, height = 600;
-	const char* windowName = "Name";
+	int width, height;
+	const char* windowName;
 	GLFWwindow* window;
+	Shader shader;
+	GLuint VAO, VBO, EBO;
+	glm::mat4 model, view, projection;
+	glm::vec3 cameraPos, cameraFront, cameraUp;
+	float lastX, lastY, yaw, pitch;
+	bool firstMouse;
 
 	// Game loop
 	float lastFrameTime = 0.0f;
-	glm::vec3 clearColor = glm::vec3(0.0f);
+	glm::vec3 clearColor = glm::vec3(0.1f);
 
 	// OpenGL
 	void setupOpenGLRendering();
+	static void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+	static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 public:
 	float gameSpeed = 0.1f;
@@ -35,6 +42,6 @@ public:
 
 	int init();
 	void update(float dt);
-	void render();
+	void render(float frameTime);
 	void processInput(GLFWwindow* window);
 };

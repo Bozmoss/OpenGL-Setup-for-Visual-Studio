@@ -62,6 +62,10 @@ void Shader::use() {
 	glUseProgram(shaderProgram);
 }
 
+void Shader::setMat4(const std::string& name, const glm::mat4& mat) {
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
 std::string Shader::loadShaderSource(std::string path) {
 	std::ifstream fileReader;
 	fileReader.open(path, std::ios::binary);
