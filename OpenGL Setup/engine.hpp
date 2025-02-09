@@ -9,21 +9,20 @@
 #include <glm/glm.hpp>
 
 // Header includes
-// TODO: Add headers here
-
-// Function prototypes
-void WindowResize(GLFWwindow* window, int width, int height);
+#include "shader.hpp"
 
 // Class definition
 class Engine {
 private:
-	int width = 800, height = 600;
-	const char* windowName = "Name";
+	int width, height;
+	const char* windowName;
 	GLFWwindow* window;
+	Shader shader;
+	GLuint VAO, VBO;
 
 	// Game loop
 	float lastFrameTime = 0.0f;
-	glm::vec3 clearColor = glm::vec3(0.0f);
+	glm::vec3 clearColor = glm::vec3(0.1f);
 
 	// OpenGL
 	void setupOpenGLRendering();

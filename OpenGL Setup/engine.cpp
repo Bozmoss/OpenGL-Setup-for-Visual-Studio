@@ -14,7 +14,6 @@ int Engine::init() {
 
 	// Use the core profile
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// For MacOS
 	// glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -41,7 +40,7 @@ int Engine::init() {
 	glViewport(0, 0, width, height);
 
 	// Setup callbacks
-	glfwSetFramebufferSizeCallback(window, WindowResize);
+	glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, int w, int h) { glViewport(0, 0, w, h); });
 	setupOpenGLRendering();
 
 	// Game loop
@@ -50,26 +49,20 @@ int Engine::init() {
 		float deltaTime = frameTime - lastFrameTime;
 		lastFrameTime = frameTime;
 
-		glfwPollEvents();
 		processInput(window);
 
 		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		update(deltaTime);
 		render();
 
 		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
 	glfwTerminate();
 	return 1;
-}
-
-void WindowResize(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-	
-	// Resize logic
 }
 
 void Engine::processInput(GLFWwindow* window) {
@@ -82,6 +75,29 @@ void Engine::processInput(GLFWwindow* window) {
 
 void Engine::setupOpenGLRendering() {
 	// OpenGL setup logic
+
+	shader.setVertexShader("vertex.glsl");
+	shader.setFragmentShader("frag.glsl");
+	shader.compile();
+
+	float vertices[] = {
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f
+	};
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void Engine::update(float dt) {
@@ -90,4 +106,9 @@ void Engine::update(float dt) {
 
 void Engine::render() {
 	// Render logic
+
+	shader.use();
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(0);
 }
