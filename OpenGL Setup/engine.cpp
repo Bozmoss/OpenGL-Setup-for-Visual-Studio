@@ -44,6 +44,7 @@ int Engine::init() {
 
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, width, height);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Enable wireframe
 
 	glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, int w, int h) { glViewport(0, 0, w, h); });
 	setupOpenGLRendering();
