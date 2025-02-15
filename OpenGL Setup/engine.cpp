@@ -74,7 +74,11 @@ int Engine::init() {
 void Engine::processInput(GLFWwindow* window) {
 	// Input processing logic
 
-	float cameraSpeed = 2.5f * 0.0016f;
+	float cameraSpeed = 2.5f * 0.0016f, eps = 0.2f;
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		cameraSpeed = 2.5f * 0.0016f * 3.0f;
+	}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		cameraPos += cameraSpeed * cameraFront;
@@ -96,6 +100,25 @@ void Engine::processInput(GLFWwindow* window) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		cameraPos -= cameraSpeed * cameraUp;
+	}
+
+	if (cameraPos.z > sceneSize / 2 - eps) {
+		cameraPos.z = sceneSize / 2 - eps;
+	}
+	if (cameraPos.z < -sceneSize / 2 + eps) {
+		cameraPos.z = -sceneSize / 2 + eps;
+	}
+	if (cameraPos.x > sceneSize / 2 - eps) {
+		cameraPos.x = sceneSize / 2 - eps;
+	}
+	if (cameraPos.x < -sceneSize / 2 + eps) {
+		cameraPos.x = -sceneSize / 2 + eps;
+	}
+	if (cameraPos.y > sceneSize / 2 - eps) {
+		cameraPos.y = sceneSize / 2 - eps;
+	}
+	if (cameraPos.y < -sceneSize / 2 + eps) {
+		cameraPos.y = -sceneSize / 2 + eps;
 	}
 }
 
@@ -147,7 +170,8 @@ void Engine::setupOpenGLRendering() {
 	shader.compile();
 
 	sphere = new Sphere(shader, glm::vec3(0.0, 2.0, 0.0), glm::vec3(1.0, 0.0, 0.0), 1.0f, false);
-	cube = new Cube(shader, glm::vec3(0.0, -2.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	cube = new Cube(shader, glm::vec3(0.0, -2.0, 0.0), glm::vec3(0.0, 1.0, 0.0), 1.0f, false);
+	scene = new Cube(shader, glm::vec3(0.0), clearColor, sceneSize, true);
 	light = new Sphere(shader, glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0), 0.25f, true);
 }
 
@@ -174,4 +198,5 @@ void Engine::render(float frameTime) {
 	light->render();
 	sphere->render();
 	cube->render();
+	scene->render();
 }

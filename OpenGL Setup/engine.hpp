@@ -22,10 +22,10 @@ private:
 	GLFWwindow* window;
 	Shader shader;
 	Sphere *sphere, *light;
-	Cube* cube;
+	Cube *cube ,*scene;
 	glm::mat4 model, view, projection;
 	glm::vec3 cameraPos, cameraFront, cameraUp;
-	float lastX, lastY, yaw, pitch;
+	float lastX, lastY, yaw, pitch, sceneSize = 25.0f;
 	bool firstMouse;
 
 	// Game loop

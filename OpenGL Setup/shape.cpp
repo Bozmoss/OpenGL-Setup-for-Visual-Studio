@@ -1,6 +1,13 @@
 #include "shape.hpp"
 
 void Cube::setupMesh() {
+    for (int i = 0; i < sizeof(vertices) / sizeof(float); i++) {
+        if (invert) {
+            vertices[i] = verticesInverted[i];
+        }
+        vertices[i] *= scale;
+    }
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);

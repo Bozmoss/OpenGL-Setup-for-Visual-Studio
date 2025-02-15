@@ -55,6 +55,39 @@ private:
         -0.5f, -0.5f,  0.5f,   0.0f, -1.0f,  0.0f
     };
 
+    float verticesInverted[8 * 6 * 6] = {
+        // Positions                // Normals
+        -0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  1.0f, // Back face
+         0.5f, -0.5f, -0.5f,   0.0f,  0.0f,  1.0f,
+         0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  1.0f,
+        -0.5f,  0.5f, -0.5f,   0.0f,  0.0f,  1.0f,
+
+        -0.5f, -0.5f,  0.5f,   0.0f,  0.0f, -1.0f, // Front face
+         0.5f, -0.5f,  0.5f,   0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f,  0.5f,   0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f,  0.5f,   0.0f,  0.0f, -1.0f,
+
+        -0.5f, -0.5f, -0.5f,   1.0f,  0.0f,  0.0f, // Left face
+        -0.5f, -0.5f,  0.5f,   1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,   1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,   1.0f,  0.0f,  0.0f,
+
+         0.5f, -0.5f, -0.5f,  -1.0f,  0.0f,  0.0f, // Right face
+         0.5f, -0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  -1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  -1.0f,  0.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,   0.0f, -1.0f,  0.0f, // Top face
+         0.5f,  0.5f, -0.5f,   0.0f, -1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,   0.0f, -1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,   0.0f, -1.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,   0.0f,  1.0f,  0.0f, // Bottom face
+         0.5f, -0.5f, -0.5f,   0.0f,  1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,   0.0f,  1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,   0.0f,  1.0f,  0.0f
+    };
+
     unsigned int indices[36] = {
         0, 1, 2, 2, 3, 0, // Back face
         4, 5, 6, 6, 7, 4, // Front face
@@ -64,8 +97,11 @@ private:
         20, 21, 22, 22, 23, 20  // Bottom face
     };
 
+    bool invert;
+    float scale;
+
 public:
-	Cube(Shader& shader, glm::vec3 pos, glm::vec3 color) : Shape(shader, pos, color) {
+	Cube(Shader& shader, glm::vec3 pos, glm::vec3 color, float scale, bool invert) : Shape(shader, pos, color), scale(scale), invert(invert) {
 		setupMesh();
 	}
 
