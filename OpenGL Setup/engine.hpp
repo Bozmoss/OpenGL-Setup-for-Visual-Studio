@@ -12,6 +12,7 @@
 
 // Header includes
 #include "shader.hpp"
+#include "shape.hpp"
 
 // Class definition
 class Engine {
@@ -20,7 +21,8 @@ private:
 	const char* windowName;
 	GLFWwindow* window;
 	Shader shader;
-	GLuint VAO, VBO, EBO;
+	Sphere *sphere, *light;
+	Cube* cube;
 	glm::mat4 model, view, projection;
 	glm::vec3 cameraPos, cameraFront, cameraUp;
 	float lastX, lastY, yaw, pitch;

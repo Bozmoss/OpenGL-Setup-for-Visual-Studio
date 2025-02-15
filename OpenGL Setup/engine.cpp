@@ -20,7 +20,7 @@ int Engine::init() {
 	// glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	// Create a window
-	window = glfwCreateWindow(width, height, windowName, nullptr, nullptr);
+	window = glfwCreateWindow(width, height, windowName, glfwGetPrimaryMonitor(), nullptr);
 
 	// Check if window was created
 	if (window == nullptr) {
@@ -73,7 +73,7 @@ int Engine::init() {
 void Engine::processInput(GLFWwindow* window) {
 	// Input processing logic
 
-	float cameraSpeed = 2.5f * 0.016f;
+	float cameraSpeed = 2.5f * 0.0016f;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		cameraPos += cameraSpeed * cameraFront;
@@ -90,16 +90,17 @@ void Engine::processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		cameraPos += cameraSpeed * cameraUp;
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		cameraPos -= cameraSpeed * cameraUp;
+	}
 }
 
 void Engine::mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 	Engine* engine = static_cast<Engine*>(glfwGetWindowUserPointer(window));
 	if (!engine) return;
-
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) != GLFW_PRESS) {
-		engine->firstMouse = true;
-		return;
-	}
 
 	if (engine->firstMouse) {
 		engine->lastX = xpos;
@@ -144,43 +145,9 @@ void Engine::setupOpenGLRendering() {
 	shader.setFragmentShader("frag.glsl");
 	shader.compile();
 
-	float vertices[] = {
-		// Positions
-	   -0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
-	   -0.5f,  0.5f, -0.5f,
-	   -0.5f, -0.5f,  0.5f,
-		0.5f, -0.5f,  0.5f,
-		0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f,  0.5f
-	};
-
-	unsigned int indices[] = {
-	0, 1, 2, 2, 3, 0, // Back face
-	4, 5, 6, 6, 7, 4, // Front face
-	0, 4, 7, 7, 3, 0, // Left face
-	1, 5, 6, 6, 2, 1, // Right face
-	3, 2, 6, 6, 7, 3, // Top face
-	0, 1, 5, 5, 4, 0  // Bottom face
-	};
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	sphere = new Sphere(shader, glm::vec3(0.0, 2.0, 0.0), glm::vec3(1.0, 0.0, 0.0), 1.0f, false);
+	cube = new Cube(shader, glm::vec3(0.0, -2.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	light = new Sphere(shader, glm::vec3(1.2f, 1.0f, 2.0f), glm::vec3(1.0), 0.25f, true);
 }
 
 void Engine::update(float dt) {
@@ -190,16 +157,20 @@ void Engine::update(float dt) {
 void Engine::render(float frameTime) {
 	// Render logic
 
-	shader.use();
-	model = glm::rotate(glm::mat4(1.0f), frameTime, glm::vec3(0.5f, 1.0f, 0.0f));
 	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 
-	shader.setMat4("model", model);
+	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	glm::vec3 lightColor(1.0f);
+
+	shader.use();
+	shader.setVec3("viewPos", cameraPos);
 	shader.setMat4("view", view);
 	shader.setMat4("projection", projection);
+	shader.setVec3("lightPos", lightPos);
+	shader.setVec3("lightColor", lightColor);
 
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
+	light->render();
+	sphere->render();
+	cube->render();
 }

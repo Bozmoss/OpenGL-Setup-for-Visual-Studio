@@ -141,10 +141,12 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.hpp" />
     <ClInclude Include="shader.hpp" />
+    <ClInclude Include="shape.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="frag.glsl" />

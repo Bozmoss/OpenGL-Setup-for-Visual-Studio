@@ -30,6 +30,9 @@
     <ClCompile Include="glad.c">
       <Filter>Source Files\glad</Filter>
     </ClCompile>
+    <ClCompile Include="shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine.hpp">
@@ -38,5 +41,16 @@
     <ClInclude Include="shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="shape.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="frag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="vertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
